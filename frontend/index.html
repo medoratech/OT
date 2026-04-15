@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MEDORA — OT Documentation System</title>
+  <meta name="description"
+    content="Speech-assisted, structured and legally defensible operative documentation system for surgeons." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+
+<body>
+
+  <!-- ═══════════════════ AUTH OVERLAY ═══════════════════ -->
+  <div id="auth-overlay" class="auth-overlay">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <div class="logo-mark">M</div>
+        <div>
+          <h1 class="auth-title">MEDORA</h1>
+          <p class="auth-sub">OT Documentation System</p>
+        </div>
+      </div>
+
+      <!-- Login -->
+      <div id="login-form" class="auth-form active">
+        <h2 class="form-heading">Sign In</h2>
+        <div class="field-group">
+          <label>Email</label>
+          <input id="login-email" type="email" placeholder="surgeon@hospital.com" autocomplete="email" />
+        </div>
+        <div class="field-group">
+          <label>Password</label>
+          <input id="login-password" type="password" placeholder="••••••••" autocomplete="current-password" />
+        </div>
+        <button id="login-btn" class="btn-primary btn-full">Sign In</button>
+        <p class="auth-switch">Don't have an account? <a href="#" id="go-register">Register</a></p>
+        <div id="login-error" class="auth-error hidden"></div>
+      </div>
+
+      <!-- Register -->
+      <div id="register-form" class="auth-form">
+        <h2 class="form-heading">Create Account</h2>
+        <div class="fields-grid-2">
+          <div class="field-group">
+            <label>Full Name</label>
+            <input id="reg-name" type="text" placeholder="Dr. Priya Sharma" />
+          </div>
+          <div class="field-group">
+            <label>Email</label>
+            <input id="reg-email" type="email" placeholder="dr.priya@hospital.com" />
+          </div>
+          <div class="field-group">
+            <label>Password</label>
+            <input id="reg-password" type="password" placeholder="••••••••" />
+          </div>
+          <div class="field-group">
+            <label>Role</label>
+            <select id="reg-role">
+              <option value="surgeon">Surgeon</option>
+              <option value="resident">Resident</option>
+              <option value="staff">OT Staff</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label>Designation</label>
+            <input id="reg-designation" type="text" placeholder="MS, MCh General Surgery" />
+          </div>
+          <div class="field-group">
+            <label>Hospital</label>
+            <input id="reg-hospital" type="text" placeholder="Apollo Hospital, Mumbai" />
+          </div>
+        </div>
+        <button id="register-btn" class="btn-primary btn-full">Create Account</button>
+        <p class="auth-switch">Already have an account? <a href="#" id="go-login">Sign In</a></p>
+        <div id="register-error" class="auth-error hidden"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ MAIN APP ═══════════════════ -->
+  <div id="app" class="app hidden">
+
+    <!-- ── Sidebar ─────────────────────────────────── -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-mark sm">M</div>
+        <div>
+          <span class="sidebar-brand">MEDORA</span>
+          <span class="sidebar-tagline">OT System</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-item active" data-page="dashboard" id="nav-dashboard">
+          <svg viewBox="0 0 24 24">
+            <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" />
+          </svg>
+          Dashboard
+        </a>
+        <a href="#" class="nav-item" data-page="new-note" id="nav-new-note">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" />
+          </svg>
+          New OT Note
+        </a>
+        <a href="#" class="nav-item" data-page="notes" id="nav-notes">
+          <svg viewBox="0 0 24 24">
+            <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z" />
+          </svg>
+          OT Notes
+        </a>
+        <a href="#" class="nav-item" data-page="patients" id="nav-patients">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
+          </svg>
+          Patients
+        </a>
+        <a href="#" class="nav-item" data-page="consultations" id="nav-consultations">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z" />
+          </svg>
+          Consultations
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-chip" id="user-chip">
+          <div class="avatar" id="user-avatar">?</div>
+          <div class="user-info">
+            <span class="user-name" id="sidebar-user-name">—</span>
+            <span class="user-role" id="sidebar-user-role">—</span>
+          </div>
+        </div>
+        <button class="btn-icon logout-btn" id="logout-btn" title="Logout">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5-5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" />
+          </svg>
+        </button>
+      </div>
+    </aside>
+
+    <!-- ── Main Content ─────────────────────────────── -->
+    <main class="main-content">
+
+      <!-- ── DASHBOARD PAGE ─────────────────────────── -->
+      <section id="page-dashboard" class="page active">
+        <div class="page-header">
+          <div>
+            <h2 class="page-title">Dashboard</h2>
+            <p class="page-subtitle" id="dash-date">—</p>
+          </div>
+          <button class="btn-primary" onclick="navigate('new-note')">
+            <svg viewBox="0 0 24 24">
+              <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+            </svg>
+            New OT Note
+          </button>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+          <div class="stat-card total">
+            <div class="stat-icon"><svg viewBox="0 0 24 24">
+                <path
+                  d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />
+              </svg></div>
+            <div class="stat-body">
+              <div class="stat-value" id="stat-total">—</div>
+              <div class="stat-label">Total Notes</div>
+            </div>
+          </div>
+          <div class="stat-card signed">
+            <div class="stat-icon"><svg viewBox="0 0 24 24">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
+              </svg></div>
+            <div class="stat-body">
+              <div class="stat-value" id="stat-signed">—</div>
+              <div class="stat-label">Signed & Complete</div>
+            </div>
+          </div>
+          <div class="stat-card draft">
+            <div class="stat-icon"><svg viewBox="0 0 24 24">
+                <path
+                  d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+              </svg></div>
+            <div class="stat-body">
+              <div class="stat-value" id="stat-draft">—</div>
+              <div class="stat-label">In Progress</div>
+            </div>
+          </div>
+          <div class="stat-card incomplete">
+            <div class="stat-icon"><svg viewBox="0 0 24 24">
+                <path
+                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
+              </svg></div>
+            <div class="stat-body">
+              <div class="stat-value" id="stat-incomplete">—</div>
+              <div class="stat-label">Missing Fields</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Activity: OT Notes + Consultations -->
+        <div class="recent-activity-grid mt-6">
+
+          <!-- OT Notes -->
+          <div class="card">
+            <div class="card-header">
+              <h3>Recent OT Notes</h3>
+              <button class="btn-ghost btn-sm" onclick="navigate('notes')">View All →</button>
+            </div>
+            <div id="recent-notes-list" class="note-list">
+              <div class="empty-state">Loading…</div>
+            </div>
+          </div>
+
+          <!-- Consultations -->
+          <div class="card">
+            <div class="card-header">
+              <h3>💬 Recent Consultations</h3>
+              <button class="btn-ghost btn-sm" onclick="navigate('consultations')">View All →</button>
+            </div>
+            <div id="recent-consults-list" class="note-list">
+              <div class="empty-state">Loading…</div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ── NEW NOTE / DICTATION PAGE ──────────────── -->
+      <section id="page-new-note" class="page">
+        <div class="page-header">
+          <div>
+            <h2 class="page-title">New OT Note</h2>
+            <p class="page-subtitle">Dictate or type your operative note</p>
+          </div>
+        </div>
+
+        <!-- Step Wizard -->
+        <div class="wizard-steps">
+          <div class="step active" id="step-1-ind">
+            <div class="step-num">1</div><span>Patient Info</span>
+          </div>
+          <div class="step-connector"></div>
+          <div class="step" id="step-2-ind">
+            <div class="step-num">2</div><span>Dictate</span>
+          </div>
+          <div class="step-connector"></div>
+          <div class="step" id="step-3-ind">
+            <div class="step-num">3</div><span>Review & Sign</span>
+          </div>
+        </div>
+
+        <!-- Step 1: Patient Info -->
+        <div id="wizard-step-1" class="wizard-panel active">
+          <div class="card">
+            <div class="card-header">
+              <h3>Patient Information</h3>
+            </div>
+            <div class="card-body">
+              <div class="fields-grid-3">
+                <div class="field-group">
+                  <label>Patient Name <span class="req">*</span></label>
+                  <input id="nw-patient-name" type="text" placeholder="Full name" />
+                </div>
+                <div class="field-group">
+                  <label>MRN <span class="req">*</span></label>
+                  <input id="nw-mrn" type="text" placeholder="MRN / Hospital ID" />
+                </div>
+                <div class="field-group">
+                  <label>Age</label>
+                  <input id="nw-age" type="text" placeholder="e.g. 42Y" />
+                </div>
+                <div class="field-group">
+                  <label>Gender</label>
+                  <select id="nw-gender">
+                    <option value="">Select</option>
+                    <option>Male</option>
+                    <option>Female</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+                <div class="field-group">
+                  <label>Ward</label>
+                  <input id="nw-ward" type="text" placeholder="e.g. Surgical Ward B" />
+                </div>
+                <div class="field-group">
+                  <label>Bed No.</label>
+                  <input id="nw-bed" type="text" placeholder="e.g. 12A" />
+                </div>
+                <div class="field-group">
+                  <label>Date of Surgery</label>
+                  <input id="nw-date" type="date" />
+                </div>
+                <div class="field-group">
+                  <label>Time Start</label>
+                  <input id="nw-time-start" type="time" />
+                </div>
+                <div class="field-group">
+                  <label>Time End</label>
+                  <input id="nw-time-end" type="time" />
+                </div>
+              </div>
+              <div class="wizard-actions">
+                <button class="btn-primary" id="step1-next-btn">Continue →</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: Dictation -->
+        <div id="wizard-step-2" class="wizard-panel">
+          <div class="card dictation-card">
+            <div class="card-header">
+              <h3>Speech Dictation</h3>
+              <span class="badge" id="dictation-note-id-badge">Draft</span>
+            </div>
+            <div class="card-body">
+
+              <!-- Waveform visualizer -->
+              <div class="waveform-container" id="waveform-container">
+                <div class="waveform-idle" id="waveform-idle">
+                  <svg viewBox="0 0 24 24" class="mic-icon">
+                    <path
+                      d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z" />
+                  </svg>
+                  <p>Press Record to start dictation</p>
+                </div>
+                <canvas id="waveform-canvas" class="hidden"></canvas>
+                <div class="recording-pulse hidden" id="recording-pulse">
+                  <span class="rec-dot"></span> REC <span id="rec-timer">00:00</span>
+                </div>
+              </div>
+
+              <!-- Controls -->
+              <div class="dictation-controls">
+                <button class="btn-record" id="record-btn" title="Start Recording">
+                  <svg viewBox="0 0 24 24">
+                    <path
+                      d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z" />
+                  </svg>
+                </button>
+                <button class="btn-stop hidden" id="stop-btn" title="Stop Recording">
+                  <svg viewBox="0 0 24 24">
+                    <rect x="6" y="6" width="12" height="12" />
+                  </svg>
+                </button>
+              </div>
+
+              <!-- Transcript + tips -->
+              <div class="transcript-section">
+                <div class="transcript-header">
+                  <label>Transcript</label>
+                  <div class="transcript-actions">
+                    <button class="btn-ghost btn-xs" id="clear-transcript-btn">Clear</button>
+                  </div>
+                </div>
+                <textarea id="transcript-area" rows="8"
+                  placeholder="Your dictation will appear here…&#10;&#10;Example: 'Standard three-port laparoscopic appendectomy performed under general anesthesia. Pre-op diagnosis was acute appendicitis. Appendix was inflamed but not perforated. Blood loss was minimal approximately 10ml. Sponge count and instrument count correct. Patient moved to recovery ward post-op.'"></textarea>
+              </div>
+
+              <div class="tip-box">
+                <strong>💡 Dictation Tips:</strong>
+                Mention blood loss, sponge counts, anesthesia type, pre &amp; post-op diagnosis, complications, and
+                post-op instructions clearly.
+                MEDORA's AI will structure your narration automatically.
+              </div>
+
+              <div class="wizard-actions">
+                <button class="btn-ghost" onclick="goToStep(1)">← Back</button>
+                <button class="btn-primary" id="structure-btn">
+                  <svg viewBox="0 0 24 24">
+                    <path
+                      d="M12 2l-5.5 9h11L12 2zm0 3.84L14.6 10h-5.2L12 5.84zM17.5 13c-2.49 0-4.5 2.01-4.5 4.5S15.01 22 17.5 22s4.5-2.01 4.5-4.5S19.99 13 17.5 13zm0 7c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5zM3 21.5h8v-8H3v8zm2-6h4v4H5v-4z" />
+                  </svg>
+                  Structure with AI →
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3: Review & Sign -->
+        <div id="wizard-step-3" class="wizard-panel">
+          <!-- Missing fields alert -->
+          <div id="missing-fields-alert" class="missing-alert hidden">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
+            </svg>
+            <div>
+              <strong>Mandatory fields missing:</strong>
+              <span id="missing-fields-list"></span>
+            </div>
+          </div>
+
+          <div class="review-grid">
+            <!-- Left col: all editable sections -->
+            <div class="review-left">
+
+              <!-- Care Team -->
+              <div class="card review-section mb-4" id="section-care-team">
+                <div class="card-header collapsible" onclick="toggleSection('care-team')">
+                  <h3>Care Team</h3><span class="chevron">▼</span>
+                </div>
+                <div class="card-body" id="body-care-team">
+                  <div class="fields-grid-2">
+                    <div class="field-group"><label>Surgeon</label><input id="rv-surgeon" /></div>
+                    <div class="field-group"><label>Assistant</label><input id="rv-assistant" /></div>
+                    <div class="field-group"><label>Anesthetist</label><input id="rv-anesthetist" /></div>
+                    <div class="field-group"><label>Scrub Nurse</label><input id="rv-scrub-nurse" /></div>
+                    <div class="field-group"><label>Circulating Nurse</label><input id="rv-circ-nurse" /></div>
+                    <div class="field-group"><label>Anesthesia Type</label><input id="rv-anesthesia" /></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Diagnosis -->
+              <div class="card review-section mb-4" id="section-diagnosis">
+                <div class="card-header collapsible" onclick="toggleSection('diagnosis')">
+                  <h3>Diagnosis</h3><span class="chevron">▼</span>
+                </div>
+                <div class="card-body" id="body-diagnosis">
+                  <div class="field-group">
+                    <label>Pre-operative Diagnosis <span class="req">*</span></label>
+                    <textarea id="rv-pre-op" rows="2"></textarea>
+                  </div>
+                  <div class="field-group">
+                    <label>Post-operative Diagnosis <span class="req">*</span></label>
+                    <textarea id="rv-post-op" rows="2"></textarea>
+                  </div>
+                  <div class="field-group">
+                    <label>Procedure Name <span class="req">*</span></label>
+                    <input id="rv-procedure-name" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Procedure -->
+              <div class="card review-section mb-4" id="section-procedure">
+                <div class="card-header collapsible" onclick="toggleSection('procedure')">
+                  <h3>Procedure Description</h3><span class="chevron">▼</span>
+                </div>
+                <div class="card-body" id="body-procedure">
+                  <div class="field-group">
+                    <label>Step-by-step Description <span class="req">*</span></label>
+                    <textarea id="rv-procedure-desc" rows="6"></textarea>
+                  </div>
+                  <div class="field-group">
+                    <label>Intra-operative Findings</label>
+                    <textarea id="rv-intra-op" rows="3"></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Safety Counts -->
+              <div class="card review-section mb-4" id="section-safety">
+                <div class="card-header collapsible" onclick="toggleSection('safety')">
+                  <h3>Safety Counts &amp; Clinical Data</h3><span class="chevron">▼</span>
+                </div>
+                <div class="card-body" id="body-safety">
+                  <div class="fields-grid-2">
+                    <div class="field-group">
+                      <label>Blood Loss (mL) <span class="req">*</span></label>
+                      <input id="rv-blood-loss" placeholder="e.g. 150" />
+                    </div>
+                    <div class="field-group">
+                      <label>Fluids Given</label>
+                      <input id="rv-fluids" placeholder="e.g. 1L NS" />
+                    </div>
+                    <div class="field-group">
+                      <label>Sponge Count <span class="req">*</span></label>
+                      <select id="rv-sponge">
+                        <option value="">Select</option>
+                        <option value="yes">✓ Correct</option>
+                        <option value="no">✗ Incorrect</option>
+                        <option value="not_mentioned">Not Done</option>
+                      </select>
+                    </div>
+                    <div class="field-group">
+                      <label>Instrument Count</label>
+                      <select id="rv-instrument">
+                        <option value="">Select</option>
+                        <option value="yes">✓ Correct</option>
+                        <option value="no">✗ Incorrect</option>
+                        <option value="not_mentioned">Not Done</option>
+                      </select>
+                    </div>
+                    <div class="field-group">
+                      <label>Needle Count</label>
+                      <select id="rv-needle">
+                        <option value="">Select</option>
+                        <option value="yes">✓ Correct</option>
+                        <option value="no">✗ Incorrect</option>
+                        <option value="not_mentioned">Not Done</option>
+                      </select>
+                    </div>
+                    <div class="field-group">
+                      <label>Drain Placed</label>
+                      <select id="rv-drain">
+                        <option value="">Select</option>
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="field-group">
+                    <label>Wound Closure</label>
+                    <input id="rv-wound" placeholder="e.g. Closed in layers with Vicryl + skin staples" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Implants & Outcome -->
+              <div class="card review-section mb-4" id="section-implants">
+                <div class="card-header collapsible" onclick="toggleSection('implants')">
+                  <h3>Implants, Complications &amp; Outcome</h3><span class="chevron">▼</span>
+                </div>
+                <div class="card-body" id="body-implants">
+                  <div class="fields-grid-2">
+                    <div class="field-group">
+                      <label>Implants Used</label>
+                      <input id="rv-implants" placeholder="None / describe" />
+                    </div>
+                    <div class="field-group">
+                      <label>Consumables</label>
+                      <input id="rv-consumables" placeholder="Sutures, stapler, etc." />
+                    </div>
+                    <div class="field-group">
+                      <label>Specimen Sent</label>
+                      <input id="rv-specimen" placeholder="e.g. Appendix to histopathology" />
+                    </div>
+                    <div class="field-group">
+                      <label>Disposition</label>
+                      <select id="rv-disposition">
+                        <option value="">Select</option>
+                        <option value="ICU">ICU</option>
+                        <option value="ward">Ward</option>
+                        <option value="recovery">Recovery Room</option>
+                        <option value="home">Home</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="field-group">
+                    <label>Complications <span class="req">*</span></label>
+                    <textarea id="rv-complications" rows="2" placeholder="None / describe"></textarea>
+                  </div>
+                  <div class="field-group">
+                    <label>Post-operative Instructions <span class="req">*</span></label>
+                    <textarea id="rv-post-op-inst" rows="3"></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <div class="wizard-actions">
+                <button class="btn-ghost" onclick="goToStep(2)">← Back</button>
+                <button class="btn-secondary" id="save-draft-btn">Save Draft</button>
+                <button class="btn-primary btn-sign" id="sign-note-btn">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
+                  </svg>
+                  Sign &amp; Finalise
+                </button>
+              </div>
+            </div>
+
+            <!-- Right col: live preview + signature -->
+            <div class="review-right">
+              <div class="card sticky-card">
+                <div class="card-header">
+                  <h3>OT Note Preview</h3>
+                  <div class="preview-actions">
+                    <button class="btn-ghost btn-xs" id="export-pdf-btn">
+                      <svg viewBox="0 0 24 24">
+                        <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
+                      </svg>
+                      PDF
+                    </button>
+                  </div>
+                </div>
+                <div id="note-preview" class="note-preview"></div>
+
+                <!-- Digital Signature Pad -->
+                <div class="sig-section" id="sig-section">
+                  <h4 class="sig-title">Digital Signature</h4>
+                  <canvas id="sig-canvas" width="380" height="120"></canvas>
+                  <div class="sig-actions">
+                    <button class="btn-ghost btn-xs" id="clear-sig-btn">Clear</button>
+                    <span class="sig-hint">Sign above with mouse or touch</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── NOTES LIST PAGE ─────────────────────────── -->
+      <section id="page-notes" class="page">
+        <div class="page-header">
+          <div>
+            <h2 class="page-title">OT Notes</h2>
+            <p class="page-subtitle">All operative documentation records</p>
+          </div>
+          <button class="btn-primary" onclick="navigate('new-note')">
+            <svg viewBox="0 0 24 24">
+              <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+            </svg>
+            New Note
+          </button>
+        </div>
+
+        <!-- Filters -->
+        <div class="filter-bar">
+          <input id="notes-search" type="text" placeholder="Search by patient, MRN or procedure…"
+            class="search-input" />
+          <div class="filter-chips">
+            <button class="chip active" data-status="">All</button>
+            <button class="chip" data-status="draft">Draft</button>
+            <button class="chip" data-status="review">Review</button>
+            <button class="chip" data-status="signed">Signed</button>
+          </div>
+        </div>
+
+        <div id="notes-list-container" class="notes-table-wrap">
+          <div class="empty-state">Loading…</div>
+        </div>
+      </section>
+
+      <!-- ── PATIENTS PAGE ──────────────────────────── -->
+      <section id="page-patients" class="page">
+        <div class="page-header">
+          <div>
+            <h2 class="page-title">Patients</h2>
+            <p class="page-subtitle">Patient registry</p>
+          </div>
+          <button class="btn-primary" id="add-patient-btn">
+            <svg viewBox="0 0 24 24">
+              <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+            </svg>
+            Add Patient
+          </button>
+        </div>
+        <div class="filter-bar">
+          <input id="patient-search" type="text" placeholder="Search by name or MRN…" class="search-input" />
+        </div>
+        <div id="patients-list-container" class="notes-table-wrap">
+          <div class="empty-state">Loading…</div>
+        </div>
+      </section>
+
+
+      <!-- ── CONSULTATIONS LIST PAGE ─────────────────── -->
+      <section id="page-consultations" class="page">
+        <div class="page-header">
+          <div>
+            <h2 class="page-title">Consultations</h2>
+            <p class="page-subtitle">Doctor-patient consultation records</p>
+          </div>
+          <button class="btn-primary" onclick="navigate('new-consultation')">
+            <svg viewBox="0 0 24 24">
+              <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+            </svg>
+            New Consultation
+          </button>
+        </div>
+
+        <!-- Stats row -->
+        <div class="stats-grid" id="consult-stats-row" style="margin-bottom:1.5rem">
+          <div class="stat-card total">
+            <div class="stat-icon"><svg viewBox="0 0 24 24">
+                <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" />
+              </svg></div>
+            <div class="stat-body">
+              <div class="stat-value" id="cs-total">—</div>
+              <div class="stat-label">Total</div>
+            </div>
+          </div>
+          <div class="stat-card signed">
+            <div class="stat-icon"><svg viewBox="0 0 24 24">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
+              </svg></div>
+            <div class="stat-body">
+              <div class="stat-value" id="cs-finalized">—</div>
+              <div class="stat-label">Finalized</div>
+            </div>
+          </div>
+          <div class="stat-card draft">
+            <div class="stat-icon"><svg viewBox="0 0 24 24">
+                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z" />
+              </svg></div>
+            <div class="stat-body">
+              <div class="stat-value" id="cs-drafts">—</div>
+              <div class="stat-label">In Progress</div>
+            </div>
+          </div>
+          <div class="stat-card incomplete">
+            <div class="stat-icon"><svg viewBox="0 0 24 24">
+                <path
+                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
+              </svg></div>
+            <div class="stat-body">
+              <div class="stat-value" id="cs-incomplete">—</div>
+              <div class="stat-label">Missing Fields</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter bar -->
+        <div class="filter-bar">
+          <input id="consult-search" type="text" placeholder="Search by patient, MRN or diagnosis…"
+            class="search-input" />
+          <div class="filter-chips">
+            <button class="chip active" data-cstatus="">All</button>
+            <button class="chip" data-cstatus="draft">Draft</button>
+            <button class="chip" data-cstatus="review">Review</button>
+            <button class="chip" data-cstatus="finalized">Finalized</button>
+          </div>
+        </div>
+
+        <div id="consultations-list-container" class="notes-table-wrap">
+          <div class="empty-state">Loading…</div>
+        </div>
+      </section>
+
+      <!-- ── NEW CONSULTATION WIZARD ─────────────────── -->
+      <section id="page-new-consultation" class="page">
+        <div class="page-header">
+          <div>
+            <h2 class="page-title">New Consultation</h2>
+            <p class="page-subtitle">Record and structure doctor-patient conversation</p>
+          </div>
+        </div>
+
+        <!-- Step indicators -->
+        <div class="wizard-steps">
+          <div class="step active" id="cw-step-1-ind">
+            <div class="step-num">1</div><span>Patient Info</span>
+          </div>
+          <div class="step-connector"></div>
+          <div class="step" id="cw-step-2-ind">
+            <div class="step-num">2</div><span>Record</span>
+          </div>
+          <div class="step-connector"></div>
+          <div class="step" id="cw-step-3-ind">
+            <div class="step-num">3</div><span>Review</span>
+          </div>
+        </div>
+
+        <!-- Step 1: Patient Info -->
+        <div id="cw-wizard-step-1" class="wizard-panel active">
+          <div class="card">
+            <div class="card-header">
+              <h3>Patient &amp; Consultation Details</h3>
+            </div>
+            <div class="card-body">
+              <div class="fields-grid-3">
+                <div class="field-group">
+                  <label>Patient Name <span class="req">*</span></label>
+                  <input id="cw-patient-name" type="text" placeholder="Full name" />
+                </div>
+                <div class="field-group">
+                  <label>MRN</label>
+                  <input id="cw-mrn" type="text" placeholder="Hospital ID" />
+                </div>
+                <div class="field-group">
+                  <label>Age</label>
+                  <input id="cw-age" type="text" placeholder="e.g. 35Y" />
+                </div>
+                <div class="field-group">
+                  <label>Gender</label>
+                  <select id="cw-gender">
+                    <option value="">Select</option>
+                    <option>Male</option>
+                    <option>Female</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+                <div class="field-group">
+                  <label>Department</label>
+                  <input id="cw-department" type="text" placeholder="e.g. General Medicine" />
+                </div>
+                <div class="field-group">
+                  <label>Date</label>
+                  <input id="cw-date" type="date" />
+                </div>
+              </div>
+              <div class="wizard-actions">
+                <button class="btn-primary" id="cw-step1-next-btn">Continue →</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: Record conversation -->
+        <div id="cw-wizard-step-2" class="wizard-panel">
+          <div class="card dictation-card">
+            <div class="card-header">
+              <h3>Record Consultation</h3>
+              <span class="badge" id="cw-consult-id-badge">Draft</span>
+            </div>
+            <div class="card-body">
+
+              <!-- Waveform -->
+              <div class="waveform-container" id="cw-waveform-container">
+                <div class="waveform-idle" id="cw-waveform-idle">
+                  <svg viewBox="0 0 24 24" class="mic-icon">
+                    <path
+                      d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z" />
+                  </svg>
+                  <p>Press Record to capture the consultation</p>
+                </div>
+                <canvas id="cw-waveform-canvas" class="hidden"></canvas>
+                <div class="recording-pulse hidden" id="cw-recording-pulse">
+                  <span class="rec-dot"></span> REC <span id="cw-rec-timer">00:00</span>
+                </div>
+              </div>
+
+              <!-- Controls -->
+              <div class="dictation-controls">
+                <button class="btn-record" id="cw-record-btn" title="Start Recording">
+                  <svg viewBox="0 0 24 24">
+                    <path
+                      d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z" />
+                  </svg>
+                </button>
+                <button class="btn-stop hidden" id="cw-stop-btn" title="Stop Recording">
+                  <svg viewBox="0 0 24 24">
+                    <rect x="6" y="6" width="12" height="12" />
+                  </svg>
+                </button>
+              </div>
+
+              <!-- Transcript -->
+              <div class="transcript-section">
+                <div class="transcript-header">
+                  <label>Conversation Transcript</label>
+                  <div class="transcript-actions">
+                    <button class="btn-ghost btn-xs" id="cw-clear-transcript-btn">Clear</button>
+                  </div>
+                </div>
+                <textarea id="cw-transcript-area" rows="9"
+                  placeholder="The conversation will appear here…&#10;&#10;Tip: Include the full doctor-patient dialogue — symptoms, examination, the doctor's assessment and plan. The AI will extract diagnosis, prescriptions, lab orders, and follow-up.">
+              </textarea>
+              </div>
+
+              <div class="tip-box">
+                <strong>💡 Tips:</strong> Speak clearly. Include the doctor's diagnosis statement, drug names with
+                doses, any lab tests ordered, and follow-up advice.
+                MEDORA AI will automatically extract and structure all clinical fields.
+              </div>
+
+              <div class="wizard-actions">
+                <button class="btn-ghost" onclick="cwGoToStep(1)">← Back</button>
+                <button class="btn-primary" id="cw-structure-btn">
+                  <svg viewBox="0 0 24 24">
+                    <path
+                      d="M12 2l-5.5 9h11L12 2zm0 3.84L14.6 10h-5.2L12 5.84zM17.5 13c-2.49 0-4.5 2.01-4.5 4.5S15.01 22 17.5 22s4.5-2.01 4.5-4.5S19.99 13 17.5 13zm0 7c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5zM3 21.5h8v-8H3v8zm2-6h4v4H5v-4z" />
+                  </svg>
+                  Analyse with AI →
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3: Review AI output -->
+        <div id="cw-wizard-step-3" class="wizard-panel">
+          <div id="cw-missing-alert" class="missing-alert hidden">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
+            </svg>
+            <div><strong>Missing fields:</strong> <span id="cw-missing-list"></span></div>
+          </div>
+
+          <div class="review-grid">
+            <!-- Left: editable structured output -->
+            <div class="review-left">
+
+              <!-- Diagnosis -->
+              <div class="card review-section mb-4" id="cw-section-diagnosis">
+                <div class="card-header collapsible" onclick="toggleSection('cw-diagnosis')">
+                  <h3>🩺 Diagnosis</h3><span class="chevron">▼</span>
+                </div>
+                <div class="card-body" id="body-cw-diagnosis">
+                  <div class="field-group">
+                    <label>Primary Diagnosis <span class="req">*</span></label>
+                    <textarea id="cw-rv-diagnosis" rows="2" placeholder="e.g. Acute pharyngitis"></textarea>
+                  </div>
+                  <div class="field-group">
+                    <label>Differential Diagnosis</label>
+                    <textarea id="cw-rv-ddx" rows="2" placeholder="e.g. Viral tonsillitis, Strep throat"></textarea>
+                  </div>
+                  <div class="field-group">
+                    <label>History of Present Illness</label>
+                    <textarea id="cw-rv-hpi" rows="3"></textarea>
+                  </div>
+                  <div class="field-group">
+                    <label>Examination Findings</label>
+                    <textarea id="cw-rv-exam" rows="2"></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Prescription -->
+              <div class="card review-section mb-4" id="cw-section-rx">
+                <div class="card-header collapsible" onclick="toggleSection('cw-rx')">
+                  <h3>💊 Prescription</h3><span class="chevron">▼</span>
+                </div>
+                <div class="card-body" id="body-cw-rx">
+                  <div id="cw-rx-list" class="rx-list"></div>
+                  <button class="btn-ghost btn-sm mt-2" id="cw-add-drug-btn">+ Add Drug</button>
+                </div>
+              </div>
+
+              <!-- Lab Tests -->
+              <div class="card review-section mb-4" id="cw-section-labs">
+                <div class="card-header collapsible" onclick="toggleSection('cw-labs')">
+                  <h3>🔬 Lab Tests</h3><span class="chevron">▼</span>
+                </div>
+                <div class="card-body" id="body-cw-labs">
+                  <div id="cw-labs-list" class="rx-list"></div>
+                  <button class="btn-ghost btn-sm mt-2" id="cw-add-lab-btn">+ Add Lab Test</button>
+                </div>
+              </div>
+
+              <!-- Imaging -->
+              <div class="card review-section mb-4" id="cw-section-imaging">
+                <div class="card-header collapsible" onclick="toggleSection('cw-imaging')">
+                  <h3>🩻 Imaging Ordered</h3><span class="chevron">▼</span>
+                </div>
+                <div class="card-body" id="body-cw-imaging">
+                  <div id="cw-imaging-list" class="rx-list"></div>
+                  <button class="btn-ghost btn-sm mt-2" id="cw-add-imaging-btn">+ Add Imaging</button>
+                </div>
+              </div>
+
+              <!-- Follow-up & Advice -->
+              <div class="card review-section mb-4" id="cw-section-followup">
+                <div class="card-header collapsible" onclick="toggleSection('cw-followup')">
+                  <h3>📅 Follow-up &amp; Advice</h3><span class="chevron">▼</span>
+                </div>
+                <div class="card-body" id="body-cw-followup">
+                  <div class="fields-grid-2">
+                    <div class="field-group">
+                      <label>Follow-up Date / Interval</label>
+                      <input id="cw-rv-followup-date" placeholder="e.g. After 1 week / After reports" />
+                    </div>
+                    <div class="field-group">
+                      <label>Referral</label>
+                      <input id="cw-rv-referral" placeholder="e.g. Refer to ENT" />
+                    </div>
+                  </div>
+                  <div class="field-group">
+                    <label>Follow-up Instructions <span class="req">*</span></label>
+                    <textarea id="cw-rv-followup-inst" rows="3"
+                      placeholder="e.g. Return if fever persists beyond 3 days, watch for rash"></textarea>
+                  </div>
+                  <div class="field-group">
+                    <label>Lifestyle Advice</label>
+                    <textarea id="cw-rv-lifestyle" rows="2"
+                      placeholder="e.g. Rest, increase fluid intake, avoid cold foods"></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <div class="wizard-actions">
+                <button class="btn-ghost" onclick="cwGoToStep(2)">← Back</button>
+                <button class="btn-secondary" id="cw-save-draft-btn">Save Draft</button>
+                <button class="btn-primary btn-sign" id="cw-finalize-btn">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
+                  </svg>
+                  Finalize Consultation
+                </button>
+              </div>
+            </div>
+
+            <!-- Right: summary preview -->
+            <div class="review-right">
+              <div class="card sticky-card">
+                <div class="card-header">
+                  <h3>Consultation Summary</h3>
+                </div>
+                <div id="cw-preview" class="note-preview"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ── NOTE DETAIL MODAL ──────────────────────────── -->
+  <div id="note-modal" class="modal-overlay hidden">
+    <div class="modal-box modal-lg">
+      <div class="modal-header">
+        <h3 id="modal-note-title">OT Note</h3>
+        <div class="modal-header-actions">
+          <button class="btn-secondary btn-sm" id="modal-export-pdf">
+            <svg viewBox="0 0 24 24">
+              <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
+            </svg>
+            Export PDF
+          </button>
+          <button class="btn-icon" id="close-note-modal">✕</button>
+        </div>
+      </div>
+      <div class="modal-body" id="modal-note-body"></div>
+    </div>
+  </div>
+
+  <!-- ── ADD PATIENT MODAL ── -->
+  <div id="patient-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Add Patient</h3>
+        <button class="btn-icon" id="close-patient-modal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="fields-grid-2">
+          <div class="field-group"><label>Full Name <span class="req">*</span></label><input id="pm-name" /></div>
+          <div class="field-group"><label>MRN <span class="req">*</span></label><input id="pm-mrn" /></div>
+          <div class="field-group"><label>Date of Birth</label><input id="pm-dob" type="date" /></div>
+          <div class="field-group"><label>Gender</label>
+            <select id="pm-gender">
+              <option value="">Select</option>
+              <option>Male</option>
+              <option>Female</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="field-group"><label>Blood Group</label><input id="pm-blood" placeholder="A+, B-, etc." /></div>
+          <div class="field-group"><label>Contact</label><input id="pm-contact" type="tel" /></div>
+          <div class="field-group"><label>Ward</label><input id="pm-ward" /></div>
+          <div class="field-group"><label>Bed No.</label><input id="pm-bed" /></div>
+        </div>
+        <div class="field-group"><label>Address</label><textarea id="pm-address" rows="2"></textarea></div>
+        <div id="patient-modal-error" class="auth-error hidden"></div>
+        <div class="modal-footer">
+          <button class="btn-ghost" id="cancel-patient-modal">Cancel</button>
+          <button class="btn-primary" id="save-patient-btn">Save Patient</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TOAST ── -->
+  <div id="toast" class="toast hidden"></div>
+
+  <!-- ── LOADING SPINNER ── -->
+  <div id="global-loader" class="global-loader hidden">
+    <div class="spinner"></div>
+    <p id="loader-msg">Processing…</p>
+  </div>
+
+  <script src="assets/app.js"></script>
+</body>
+
+</html>
